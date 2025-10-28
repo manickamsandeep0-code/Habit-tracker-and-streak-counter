@@ -23,9 +23,10 @@ public class HabitTrackerApp extends JFrame {
         currentHabitLogs = new HashMap<>();
         currentMonth = YearMonth.now();
         setTitle("Habit Tracker - " + user.getName());
-        setSize(900, 650);
+        setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(10, 10));
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout(15, 15));
         add(createTopPanel(), BorderLayout.NORTH);
         add(createCenterPanel(), BorderLayout.CENTER);
         add(createBottomPanel(), BorderLayout.SOUTH);
@@ -33,51 +34,75 @@ public class HabitTrackerApp extends JFrame {
         setVisible(true);
     }
     private JPanel createTopPanel() {
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        topPanel.setBackground(new Color(245, 245, 250));
         userLabel = new JLabel("User: " + currentUser.getName() + " (@" + currentUser.getUsername() + ")");
-        userLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        userLabel.setFont(new Font("Arial", Font.BOLD, 14));
         userLabel.setForeground(new Color(0, 100, 0));
         topPanel.add(userLabel);
-        topPanel.add(Box.createHorizontalStrut(20));
+        topPanel.add(Box.createHorizontalStrut(30));
         JLabel selectLabel = new JLabel("Select Habit:");
+        selectLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         topPanel.add(selectLabel);
         habitComboBox = new JComboBox<>();
-        habitComboBox.setPreferredSize(new Dimension(200, 30));
+        habitComboBox.setPreferredSize(new Dimension(220, 35));
+        habitComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
         habitComboBox.addActionListener(e -> onHabitSelected());
         topPanel.add(habitComboBox);
         JButton newHabitButton = new JButton("New Habit");
+        newHabitButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        newHabitButton.setFocusPainted(false);
         newHabitButton.addActionListener(e -> createNewHabit());
         topPanel.add(newHabitButton);
-        JButton prevMonthButton = new JButton("< Prev Month");
+        topPanel.add(Box.createHorizontalStrut(20));
+        JButton prevMonthButton = new JButton("◄ Prev");
+        prevMonthButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        prevMonthButton.setFocusPainted(false);
         prevMonthButton.addActionListener(e -> changeMonth(-1));
         topPanel.add(prevMonthButton);
-        JButton nextMonthButton = new JButton("Next Month >");
+        JButton nextMonthButton = new JButton("Next ►");
+        nextMonthButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        nextMonthButton.setFocusPainted(false);
         nextMonthButton.addActionListener(e -> changeMonth(1));
         topPanel.add(nextMonthButton);
+        topPanel.add(Box.createHorizontalStrut(20));
         JButton logoutButton = new JButton("Logout");
+        logoutButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        logoutButton.setFocusPainted(false);
+        logoutButton.setForeground(Color.RED);
         logoutButton.addActionListener(e -> logout());
         topPanel.add(logoutButton);
         return topPanel;
     }
     private JPanel createCenterPanel() {
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        centerPanel.setBackground(Color.WHITE);
         monthLabel = new JLabel(currentMonth.toString(), SwingConstants.CENTER);
-        monthLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        monthLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        monthLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 15, 0));
         centerPanel.add(monthLabel, BorderLayout.NORTH);
-        JPanel calendarPanel = new JPanel(new GridLayout(7, 7, 5, 5));
+        JPanel calendarPanel = new JPanel(new GridLayout(7, 7, 8, 8));
+        calendarPanel.setBackground(Color.WHITE);
+        calendarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         calendarButtons = new JButton[42];
         String[] dayNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         for (String dayName : dayNames) {
             JLabel dayLabel = new JLabel(dayName, SwingConstants.CENTER);
-            dayLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            dayLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            dayLabel.setForeground(new Color(100, 100, 100));
             calendarPanel.add(dayLabel);
         }
         for (int i = 0; i < 42; i++) {
             final int index = i;
             JButton dayButton = new JButton("");
-            dayButton.setPreferredSize(new Dimension(80, 60));
+            dayButton.setPreferredSize(new Dimension(90, 70));
+            dayButton.setFont(new Font("Arial", Font.BOLD, 16));
+            dayButton.setFocusPainted(false);
+            dayButton.setOpaque(true);
+            dayButton.setBorderPainted(true);
+            dayButton.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
             dayButton.setBackground(Color.LIGHT_GRAY);
             dayButton.addActionListener(e -> onDayClicked(index));
             calendarButtons[i] = dayButton;
@@ -87,13 +112,17 @@ public class HabitTrackerApp extends JFrame {
         return centerPanel;
     }
     private JPanel createBottomPanel() {
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        bottomPanel.setBackground(new Color(245, 245, 250));
         streakLabel = new JLabel("Current Streak: 0 days");
-        streakLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        streakLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        streakLabel.setForeground(new Color(0, 100, 200));
         bottomPanel.add(streakLabel);
-        bottomPanel.add(Box.createHorizontalStrut(50));
+        bottomPanel.add(Box.createHorizontalStrut(100));
         JButton exportButton = new JButton("Export Report");
+        exportButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        exportButton.setFocusPainted(false);
         exportButton.addActionListener(e -> exportReport());
         bottomPanel.add(exportButton);
         return bottomPanel;
@@ -126,6 +155,7 @@ public class HabitTrackerApp extends JFrame {
         for (int i = 0; i < 42; i++) {
             calendarButtons[i].setText("");
             calendarButtons[i].setBackground(Color.LIGHT_GRAY);
+            calendarButtons[i].setForeground(Color.BLACK);
             calendarButtons[i].setEnabled(false);
         }
         for (int day = 1; day <= daysInMonth; day++) {
@@ -143,15 +173,19 @@ public class HabitTrackerApp extends JFrame {
                 if (currentHabitLogs.containsKey(date)) {
                     boolean completed = currentHabitLogs.get(date);
                     if (completed) {
-                        calendarButtons[buttonIndex].setBackground(Color.GREEN);
+                        calendarButtons[buttonIndex].setBackground(new Color(76, 175, 80));
+                        calendarButtons[buttonIndex].setForeground(Color.WHITE);
                     } else {
-                        calendarButtons[buttonIndex].setBackground(Color.RED);
+                        calendarButtons[buttonIndex].setBackground(new Color(244, 67, 54));
+                        calendarButtons[buttonIndex].setForeground(Color.WHITE);
                     }
                 } else {
                     if (date.isBefore(today)) {
-                        calendarButtons[buttonIndex].setBackground(new Color(200, 200, 200));
+                        calendarButtons[buttonIndex].setBackground(new Color(235, 235, 235));
+                        calendarButtons[buttonIndex].setForeground(new Color(150, 150, 150));
                     } else {
                         calendarButtons[buttonIndex].setBackground(Color.WHITE);
+                        calendarButtons[buttonIndex].setForeground(Color.BLACK);
                     }
                 }
             }
@@ -173,15 +207,18 @@ public class HabitTrackerApp extends JFrame {
         if (currentColor.equals(Color.WHITE)) {
             dbManager.logHabit(selectedHabit.getId(), date, true);
             currentHabitLogs.put(date, true);
-            calendarButtons[buttonIndex].setBackground(Color.GREEN);
-        } else if (currentColor.equals(Color.GREEN)) {
+            calendarButtons[buttonIndex].setBackground(new Color(76, 175, 80));
+            calendarButtons[buttonIndex].setForeground(Color.WHITE);
+        } else if (currentColor.getRed() == 76 && currentColor.getGreen() == 175) {
             dbManager.logHabit(selectedHabit.getId(), date, false);
             currentHabitLogs.put(date, false);
-            calendarButtons[buttonIndex].setBackground(Color.RED);
-        } else if (currentColor.equals(Color.RED)) {
+            calendarButtons[buttonIndex].setBackground(new Color(244, 67, 54));
+            calendarButtons[buttonIndex].setForeground(Color.WHITE);
+        } else if (currentColor.getRed() == 244 && currentColor.getGreen() == 67) {
             dbManager.deleteHabitLog(selectedHabit.getId(), date);
             currentHabitLogs.remove(date);
             calendarButtons[buttonIndex].setBackground(Color.WHITE);
+            calendarButtons[buttonIndex].setForeground(Color.BLACK);
         }
         updateStreak();
     }
